@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "dotenv -e ../../.env -- next dev",
     "build": "next build",
-    "start": "next start",
-    "postinstall": "prisma generate --schema=../../packages/db/prisma/schema.prisma"
+    "start": "next start"
   },
   "dependencies": {
     "next": "^14.1.0",

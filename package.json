@@ -10,9 +10,8 @@
     "dev:bot": "npm run dev --workspace=@ticketbot/bot",
     "dev:dash": "npm run dev --workspace=@ticketbot/dashboard",
     "dev:dashboard": "npm run dev --workspace=@ticketbot/dashboard",
-    "db:push": "npm run push --workspace=@ticketbot/db",
-    "db:generate": "npm run generate --workspace=@ticketbot/db",
-    "clean": "Remove-Item -Recurse -Force apps/dashboard/.next",
-    "postinstall": "npm run db:push && npm run db:generate"
+    "db:push": "dotenv -e .env -- npm run push --workspace=@ticketbot/db",
+    "db:generate": "dotenv -e .env -- npm run generate --workspace=@ticketbot/db",
+    "clean": "Remove-Item -Recurse -Force apps/dashboard/.next"
   }
 }
