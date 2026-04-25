@@ -4,8 +4,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "generate": "dotenv -e ../../.env -- prisma generate",
-    "push": "dotenv -e ../../.env -- prisma db push"
+    "generate": "prisma generate",
+    "push": "prisma db push"
   },
   "dependencies": {
     "@prisma/client": "^5.10.2"
