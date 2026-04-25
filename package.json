@@ -13,6 +13,6 @@
     "db:push": "npm run push --workspace=@ticketbot/db",
     "db:generate": "npm run generate --workspace=@ticketbot/db",
     "clean": "Remove-Item -Recurse -Force apps/dashboard/.next",
-    "postinstall": "npm run db:generate"
+    "postinstall": "npm run db:push && npm run db:generate"
   }
 }
