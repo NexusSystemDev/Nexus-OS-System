@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "dotenv -e ../../.env -- next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "postinstall": "cd ../../ && npm run db:push && npm run db:generate"
   },
   "dependencies": {
     "next": "^14.1.0",
