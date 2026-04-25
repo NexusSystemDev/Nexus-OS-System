@@ -1,0 +1,23 @@
+{
+  "bot": {
+    "ticket_opened": "Ticket erfolgreich erstellt!",
+    "ticket_opened_desc": "Dein Ticket wurde in {channel} erstellt. Bitte warte dort auf die Unterstützung.",
+    "ticket_closed": "Ticket geschlossen",
+    "ticket_closed_desc": "Dieses Ticket wurde von {user} geschlossen.",
+    "ticket_claimed": "Ticket übernommen",
+    "ticket_claimed_desc": "Dieses Ticket wird nun von {user} bearbeitet.",
+    "ticket_reopened": "Ticket wiedereröffnet",
+    "ticket_reopened_desc": "Dieses Ticket wurde von {user} wieder geöffnet.",
+    "permission_denied": "🛡️ **Berechtigung fehlt:** Du hast keine Erlaubnis für diese Aktion.",
+    "ticket_not_found": "Ticket nicht gefunden!",
+    "ticket_error": "Fehler beim Erstellen des Tickets",
+    "ticket_limit_reached": "Du hast bereits die maximale Anzahl an offenen Tickets erreicht.",
+    "welcome_message_default": "Willkommen in deinem Ticket! Das Team ist gleich für dich da."
+  },
+  "dashboard": {
+    "language": "Sprache",
+    "language_desc": "Wähle die Sprache für den Bot und das Dashboard aus.",
+    "save_success": "Konfiguration erfolgreich gespeichert!",
+    "save_error": "Fehler beim Speichern der Konfiguration."
+  }
+}

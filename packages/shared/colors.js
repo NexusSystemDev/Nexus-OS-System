@@ -1,0 +1,8 @@
+export const COLORS = {
+  PRIMARY: '#5865F2',
+  SUCCESS: '#57F287',
+  DANGER: '#ED4245',
+  WARNING: '#FEE75C',
+  DEFAULT: '#2b2d31',
+  INVISIBLE: '#2f3136'
+};

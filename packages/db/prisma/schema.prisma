@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id
+  username      String
+  avatar        String?
+  accessToken   String?
+  refreshToken  String?
+  guilds        GuildConfig[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model GuildConfig {
+  id                  String   @id // Discord Server ID
+  name                String
+  icon                String?
+  ticketSystemActive  Boolean  @default(true)
+  logChannelId        String?
+  transcriptChannelId String?
+  autoDeleteHours     Int      @default(48)
+  autoCloseEnabled    Boolean  @default(false)
+  autoCloseHours      Int      @default(48)
+  autoPingEnabled     Boolean  @default(false)
+  autoPingTime        Int      @default(30)
+  language            String   @default("de")
+  
+  // Security
+  proxyProtectionEnabled Boolean @default(false)
+  minAccountAge         Int     @default(0) // In days
+  globalBlacklistEnabled Boolean @default(true)
+
+  owners              User[]
+  prefix              String   @default("!")
+  welcomeChannelId    String?
+  ticketPanels        TicketPanel[]
+  ticketTypes         TicketType[]
+  tickets             Ticket[]
+  blacklists          Blacklist[]
+  customCommands      CustomCommand[]
+  rolePermissions     RolePermission[]
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model TicketPanel {
+  id              String   @id @default(cuid())
+  guildId         String
+  guild           GuildConfig @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  channelId       String
+  messageId       String?
+  title           String   @default("Support Tickets")
+  description     String   @default("Klicke auf den Button, um ein Ticket zu erstellen.")
+  embedColor      String   @default("#5865F2")
+  embedFooter     String?
+  thumbnail       String?
+  image           String?
+  useSelectMenu   Boolean  @default(false)
+  placeholderText String?
+  buttonText      String   @default("Ticket erstellen")
+  buttonEmoji     String?
+  buttonStyle     String   @default("PRIMARY") // PRIMARY, SECONDARY, SUCCESS, DANGER
+  ticketTypes     TicketType[]
+}
+
+model TicketType {
+  id              String   @id @default(cuid())
+  guildId         String
+  guild           GuildConfig @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  panelId         String?
+  panel           TicketPanel? @relation(fields: [panelId], references: [id], onDelete: SetNull)
+  name            String
+  emoji           String?
+  description     String?
+  isActive        Boolean  @default(true)
+  categoryId      String?
+  supportRoles    String[] // Array of Role IDs
+  supportUsers    String[] // Array of User IDs
+  welcomeMessage  String   @default("Willkommen in deinem Ticket! Das Team ist gleich für dich da.")
+  embedColor      String   @default("#2b2d31")
+  sortOrder       Int      @default(0)
+  useModal        Boolean  @default(false)
+  modalQuestions  Json?    // Array of objects { customId, label, style, required, placeholder }
+  embedTitle      String?  
+  channelNameFormat String @default("ticket-{username}")
+  closedChannelNameFormat String? @default("🕐48h")
+  tickets         Ticket[]
+}
+
+model Ticket {
+  id              String   @id @default(cuid())
+  guildId         String
+  guild           GuildConfig @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  typeId          String
+  type            TicketType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  creatorId       String
+  channelId       String?
+  status          String   @default("OPEN") // OPEN, CLOSED, LOCKED
+  claimedById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  closedAt        DateTime?
+  members         TicketMember[]
+  logs            TicketLog[]
+  transcript      Transcript?
+}
+
+model TicketMember {
+  id        String   @id @default(cuid())
+  ticketId  String
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  userId    String
+  addedById String?
+  addedAt   DateTime @default(now())
+}
+
+model TicketLog {
+  id        String   @id @default(cuid())
+  ticketId  String
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  action    String   // OPENED, CLOSED, CLAIMED, RENAMED, MEMBER_ADDED, MEMBER_REMOVED, LOCKED, UNLOCKED
+  userId    String   // Who performed the action
+  details   String?
+  createdAt DateTime @default(now())
+}
+
+model Transcript {
+  id        String   @id @default(cuid())
+  ticketId  String   @unique
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  htmlData  String?  
+  url       String?
+  createdAt DateTime @default(now())
+}
+
+model Blacklist {
+  id          String   @id @default(cuid())
+  guildId     String
+  targetId    String   // UserId oder RoleId
+  type        String   // USER oder ROLE
+  reason      String?
+  
+  guild       GuildConfig @relation(fields: [guildId], references: [id], onDelete: Cascade)
+}
+
+model CustomCommand {
+  id        String   @id @default(cuid())
+  guildId   String
+  guild     GuildConfig @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  name      String
+  response  String
+  isEmbed   Boolean  @default(false)
+}
+
+model RolePermission {
+  id          String   @id @default(cuid())
+  guildId     String
+  guild       GuildConfig @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  roleId      String   @unique // One entry per role per guild
+  permissions String[] // Array of strings: DASHBOARD, TICKET_CLOSE, etc.
+  
+  @@unique([guildId, roleId])
+}
+
+model GlobalBlacklist {
+  id        String   @id @default(cuid())
+  userId    String   @unique // Discord User ID
+  reason    String?
+  addedAt   DateTime @default(now())
+}
